@@ -11,7 +11,7 @@ void add(char* huntId)
 {
     char cwd[CWD_SIZE];
     getPath(cwd, huntId);
-    printf("\n\n%s\n", cwd);
+
     if(mkdir(cwd, 0755) < 0 || errno == EEXIST){
         printf("Hunt exists, moving on to adding treasure\n");
     } else{
@@ -37,7 +37,7 @@ void add(char* huntId)
     fclose(out);
 }
 
-void list(char* huntId){
+void list(char* huntId, uint8_t tid){
     char cwd[CWD_SIZE];
     struct dirent* in_file;
     getPath(cwd, huntId);
@@ -68,11 +68,22 @@ void list(char* huntId){
             return;
         }
         while(fread(&t, sizeof(t), 1, in) == 1){
-            printf("\n\tTreasure id: %hhd\n", t.tid);
-            printf("\tUser name: %s\n", t.uname);
-            printf("\tGPS coords (lat lon): %g %g\n", t.GPS.lat, t.GPS.lon);
-            printf("\tClue: %s\n", t.clue);
-            printf("\tValue: %d\n\n", t.value);
+            if(tid == 0){
+                printf("\n\tTreasure id: %hhd\n", t.tid);
+                printf("\tUser name: %s\n", t.uname);
+                printf("\tGPS coords (lat lon): %g %g\n", t.GPS.lat, t.GPS.lon);
+                printf("\tClue: %s\n", t.clue);
+                printf("\tValue: %d\n\n", t.value);
+            } else {
+                if(t.tid == tid){
+                    printf("\n\tTreasure id: %hhd\n", t.tid);
+                    printf("\tUser name: %s\n", t.uname);
+                    printf("\tGPS coords (lat lon): %g %g\n", t.GPS.lat, t.GPS.lon);
+                    printf("\tClue: %s\n", t.clue);
+                    printf("\tValue: %d\n\n", t.value);
+                    break;
+                }
+            }
         }
         fclose(in);
     }

@@ -26,16 +26,33 @@ int main(int argc, char** argv)
         strcpy(huntId, argv[2]);
     }
 
+
     // --add
     if(strcmp(argv[1], "--add") == 0){
         add(huntId);
 
     // --list
     } else if(strcmp(argv[1], "--list") == 0){
-        list(huntId);
+        list(huntId, 0);
+
+    // --view    
     } else {
-        printf("Bad command\n");
-    }
+        uint8_t tid = 0;
+
+        if(argc < 4){
+            printf("No treasureID specified\n");
+            printf("Please enter a treasureID:" ); scanf("%hhd", &tid);
+        } else {
+            tid = strtol(argv[3], NULL, 10);
+        }
+        if(tid == 0){
+            printf("treasureID cannot be 0\n");
+            return 0;
+        }
+        if(strcmp(argv[1], "--view") == 0){
+            list(huntId, tid);
+        }
+    } 
 
     return 0;
 }
