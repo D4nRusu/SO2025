@@ -7,6 +7,33 @@ void getPath(char cwd[], char* huntId)
     strcat(cwd, huntId);
 }
 
+void getSize(const char *path, int *totalSize) {
+    struct dirent *in_file;
+    DIR *pDir = opendir(path);
+    while ((in_file = readdir(pDir)) != NULL) {
+        // current, parent directories ignored
+        if (!strcmp (in_file->d_name, "."))
+            continue;
+        if (!strcmp (in_file->d_name, ".."))    
+            continue;
+
+        char fPath[PATH_MAX];
+        strcpy(fPath, path);
+        strcat(fPath, PATH_SEP);
+        strcat(fPath, in_file->d_name);
+        struct stat info;
+        if(stat(fPath, &info) == -1) {
+            perror("stat");
+            return;
+        }
+        if(S_ISDIR(info.st_mode))
+            getSize(fPath, totalSize);
+        else if(S_ISREG(info.st_mode))
+            (*totalSize) += info.st_size;
+    }
+    closedir(pDir);
+}
+
 void add(char* huntId)
 {
     char cwd[CWD_SIZE];
@@ -25,7 +52,7 @@ void add(char* huntId)
     printf("\tClue: "); scanf("%s", t.clue);
     printf("\tValue: "); scanf("%d", &t.value);
 
-    strcat(cwd, "/");
+    strcat(cwd, PATH_SEP);
     strcat(cwd, t.uname);
     FILE* out = fopen(cwd, "a");
     if(out == NULL){
@@ -42,7 +69,14 @@ void list(char* huntId, uint8_t tid){
     struct dirent* in_file;
     getPath(cwd, huntId);
     DIR* hunt = opendir(cwd);
-    
+
+    if(tid == 0){
+        printf("\nHunt name: %s\n", huntId);
+        int size = 0;
+        getSize(cwd, &size);
+        printf("Total file size: %dB\n", size);
+    }
+
     if(hunt == NULL){
         printf("Error opening hunt\n");
         return;
@@ -58,8 +92,14 @@ void list(char* huntId, uint8_t tid){
 
         char fPath[CWD_SIZE];
         strcpy(fPath, cwd);
-        strcat(fPath, "/");
+        strcat(fPath, PATH_SEP);
         strcat(fPath, in_file->d_name);
+
+        struct stat file_stat;
+        stat(fPath, &file_stat);
+        char timebuf[64];
+        struct tm *tm_info = localtime(&file_stat.st_mtime);
+        strftime(timebuf, sizeof(timebuf), "%Y-%m-%d %H:%M:%S", tm_info);
 
         FILE* in = fopen(fPath, "rb");
         if(in == NULL){
@@ -73,7 +113,8 @@ void list(char* huntId, uint8_t tid){
                 printf("\tUser name: %s\n", t.uname);
                 printf("\tGPS coords (lat lon): %g %g\n", t.GPS.lat, t.GPS.lon);
                 printf("\tClue: %s\n", t.clue);
-                printf("\tValue: %d\n\n", t.value);
+                printf("\tValue: %d\n", t.value);
+                printf("\tLast modified: %s\n\n", timebuf);
             } else {
                 if(t.tid == tid){
                     printf("\n\tTreasure id: %hhd\n", t.tid);
@@ -81,6 +122,7 @@ void list(char* huntId, uint8_t tid){
                     printf("\tGPS coords (lat lon): %g %g\n", t.GPS.lat, t.GPS.lon);
                     printf("\tClue: %s\n", t.clue);
                     printf("\tValue: %d\n\n", t.value);
+                    printf("\tLast modified: %s\n\n", timebuf);
                     break;
                 }
             }

@@ -9,8 +9,12 @@
 #include <unistd.h>
 #include <string.h>
 #include <dirent.h>
+#include <ftw.h>
+#include <linux/limits.h>
+#include <time.h>
 
-#define CWD_SIZE 1000
+#define CWD_SIZE PATH_MAX
+#define PATH_SEP "/"
 
 struct Treasure{
     uint8_t tid;
