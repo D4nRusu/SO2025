@@ -35,7 +35,6 @@ int main(int argc, char** argv)
     } else if(strcmp(argv[1], "--list") == 0){
         list(huntId, 0);
 
-    // --view    
     } else {
         uint8_t tid = 0;
 
@@ -49,8 +48,18 @@ int main(int argc, char** argv)
             printf("treasureID cannot be 0\n");
             return 0;
         }
+
+        // --view
         if(strcmp(argv[1], "--view") == 0){
             list(huntId, tid);
+
+        // --rm_t (removes treasure)
+        } else if(strcmp(argv[1], "--rm_t") == 0){
+            rm_t(huntId, tid);
+
+            
+        } else {
+            printf("Bad command\n");
         }
     } 
 

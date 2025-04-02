@@ -32,3 +32,5 @@ void getPath(char cwd[], char* huntId);
 void add(char* huntId);
 
 void list(char* huntId, uint8_t tid);
+
+void rm_t(char* huntId, uint8_t tid);
