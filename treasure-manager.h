@@ -20,4 +20,4 @@ struct Treasure{
     uint8_t value;
 };
 
-void addHunt(char* huntId);
+void add(char* huntId);

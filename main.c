@@ -13,7 +13,8 @@ int main(int argc, char** argv)
         printf("Wrong command format\n");
         return 0;
     }
-
+    printf("%ld", sizeof(struct Treasure));
+    // --add
     if(strcmp(argv[1], "--add") == 0){
         char huntId[20];
         if(argc < 3){
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
         } else {
             strcpy(huntId, argv[2]);
         }
-        addHunt(huntId);
+        add(huntId);
     } else {
         printf("Bad command\n");
     }
