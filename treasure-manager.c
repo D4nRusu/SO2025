@@ -48,7 +48,7 @@ void logger(char* huntId, char* op, char* param)
 
     FILE* out = fopen(cwd, "a");
     if(out == NULL){
-        printf("Error logging operation\n");
+        // printf("Error logging operation\n");
         return;
     }
 
@@ -66,12 +66,14 @@ void add(char* huntId)
 {
     char cwd[CWD_SIZE];
     getPath(cwd, huntId);
+    int firstTime = 0;
 
     if(mkdir(cwd, 0755) < 0 || errno == EEXIST){
         printf("Hunt exists, moving on to adding treasure\n");
     } else{
         printf("Hunt created successfully at: %s/\nMoving on to adding treasure:\n", cwd);
         logger(huntId, "[CREATED HUNT]\n--add", "");
+        firstTime = 1;
     }
     
     struct Treasure t;
@@ -83,6 +85,24 @@ void add(char* huntId)
 
     strcat(cwd, PATH_SEP);
     strcat(cwd, t.uname);
+
+    if(firstTime == 1){
+        char source[CWD_SIZE], target[CWD_SIZE];
+        getcwd(source, CWD_SIZE);
+
+        strcpy(target, source);
+        strcat(target, PATH_SEP);
+        strcat(target, huntId);
+        strcat(target, "/logged_hunt");
+
+        strcat(source, PATH_SEP);
+        strcat(source, "logged_hunt_");
+        strcat(source, huntId);
+        if (symlink(target, source) != 0) {
+            perror("symlink");
+        } 
+    }
+
     FILE* out = fopen(cwd, "a");
     if(out == NULL){
         printf("Error adding treasure to the hunt\n");
@@ -230,6 +250,9 @@ void rm_t(char* huntId, uint8_t tid)
 int rm_h(char* huntId)
 {
     char cwd[CWD_SIZE];
+    char sym[CWD_SIZE];
+    getcwd(sym, CWD_SIZE);
+
     getPath(cwd, huntId);
     struct dirent* in_file;
     DIR* hunt = opendir(cwd);
@@ -253,5 +276,12 @@ int rm_h(char* huntId)
         remove(fPath);
     }
     closedir(hunt);
+
+    strcat(sym, "/logged_hunt_");
+    strcat(sym, huntId);
+    if (unlink(sym) != 0) {
+        perror("unlink");
+    }
+
     return remove(cwd);
 }
