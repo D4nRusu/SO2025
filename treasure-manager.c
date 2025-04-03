@@ -3,7 +3,7 @@
 void getPath(char cwd[], char* huntId)
 {
     getcwd(cwd, CWD_SIZE);
-    strcat(cwd, "/");
+    strcat(cwd, PATH_SEP);
     strcat(cwd, huntId);
 }
 
@@ -200,4 +200,34 @@ void rm_t(char* huntId, uint8_t tid)
         fclose(in);
     }
     closedir(hunt);
+}
+
+
+int rm_h(char* huntId)
+{
+    char cwd[CWD_SIZE];
+    getPath(cwd, huntId);
+    struct dirent* in_file;
+    DIR* hunt = opendir(cwd);
+
+    if(hunt == NULL){
+        printf("Error opening hunt\n");
+        return -1;
+    }
+
+    while((in_file = readdir(hunt))){
+        // current, parent directories ignored
+        if (!strcmp (in_file->d_name, "."))
+            continue;
+        if (!strcmp (in_file->d_name, ".."))    
+            continue;
+
+        char fPath[CWD_SIZE];
+        strcpy(fPath, cwd);
+        strcat(fPath, PATH_SEP);
+        strcat(fPath, in_file->d_name);
+        remove(fPath);
+    }
+    closedir(hunt);
+    return remove(cwd);
 }

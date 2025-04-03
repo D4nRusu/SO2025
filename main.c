@@ -35,6 +35,15 @@ int main(int argc, char** argv)
     } else if(strcmp(argv[1], "--list") == 0){
         list(huntId, 0);
 
+    // --rm_h (removes hunt)
+    } else if(strcmp(argv[1], "--rm_h") == 0){
+        int res = rm_h(huntId);
+        if(res < 0){
+            printf("Error removing hunt\n");
+            return 0;
+        } else{
+            printf("Hunt removes successfully\n");
+        }
     } else {
         uint8_t tid = 0;
 
