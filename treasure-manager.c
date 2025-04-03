@@ -7,7 +7,7 @@ void getPath(char cwd[], char* huntId)
     strcat(cwd, huntId);
 }
 
-void getSize(const char *path, int *totalSize) {
+void getSize(const char* path, int* totalSize) {
     struct dirent *in_file;
     DIR *pDir = opendir(path);
     while ((in_file = readdir(pDir)) != NULL) {
@@ -39,6 +39,29 @@ void getSize(const char *path, int *totalSize) {
     closedir(pDir);
 }
 
+void logger(char* huntId, char* op, char* param)
+{
+    char cwd[CWD_SIZE];
+    getPath(cwd, huntId);
+    strcat(cwd, PATH_SEP);
+    strcat(cwd, "logged_hunt");
+
+    FILE* out = fopen(cwd, "a");
+    if(out == NULL){
+        printf("Error logging operation\n");
+        return;
+    }
+
+    char buf[50];
+    strcpy(buf, op);
+    strcat(buf, " ");
+    strcat(buf, huntId);
+    strcat(buf, " ");
+    strcat(buf, param);
+
+    fprintf(out, "%s\n", buf);
+}
+
 void add(char* huntId)
 {
     char cwd[CWD_SIZE];
@@ -48,6 +71,7 @@ void add(char* huntId)
         printf("Hunt exists, moving on to adding treasure\n");
     } else{
         printf("Hunt created successfully at: %s/\nMoving on to adding treasure:\n", cwd);
+        logger(huntId, "[CREATED HUNT]\n--add", "");
     }
     
     struct Treasure t;

@@ -25,14 +25,16 @@ int main(int argc, char** argv)
     } else {
         strcpy(huntId, argv[2]);
     }
-
+    
 
     // --add
     if(strcmp(argv[1], "--add") == 0){
+        logger(huntId, argv[1], "");
         add(huntId);
 
     // --list
     } else if(strcmp(argv[1], "--list") == 0){
+        logger(huntId, argv[1], "");
         list(huntId, 0);
 
     // --rm_h (removes hunt)
@@ -42,7 +44,7 @@ int main(int argc, char** argv)
             printf("Error removing hunt\n");
             return 0;
         } else{
-            printf("Hunt removes successfully\n");
+            printf("Hunt removed successfully\n");
         }
     } else {
         uint8_t tid = 0;
@@ -57,7 +59,9 @@ int main(int argc, char** argv)
             printf("treasureID cannot be 0\n");
             return 0;
         }
-
+        char tid_s[600];
+        sprintf(tid_s, "%hhd", tid);
+        logger(huntId, argv[1], tid_s);
         // --view
         if(strcmp(argv[1], "--view") == 0){
             list(huntId, tid);
@@ -71,6 +75,6 @@ int main(int argc, char** argv)
             printf("Bad command\n");
         }
     } 
-
+    
     return 0;
 }

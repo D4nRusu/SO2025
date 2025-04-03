@@ -29,6 +29,10 @@ struct Treasure{
 
 void getPath(char cwd[], char* huntId);
 
+void getSize(const char* path, int* totalSize);
+
+void logger(char* huntId, char* op, char* param);
+
 void add(char* huntId);
 
 int rm_h(char* huntId);
