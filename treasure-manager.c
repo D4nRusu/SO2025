@@ -48,7 +48,7 @@ void logger(char* huntId, char* op, char* param)
 
     FILE* out = fopen(cwd, "a");
     if(out == NULL){
-        // printf("Error logging operation\n");
+        printf("Error logging operation\n");
         return;
     }
 
@@ -72,7 +72,6 @@ void add(char* huntId)
         printf("Hunt exists, moving on to adding treasure\n");
     } else{
         printf("Hunt created successfully at: %s/\nMoving on to adding treasure:\n", cwd);
-        logger(huntId, "[CREATED HUNT]\n--add", "");
         firstTime = 1;
     }
     

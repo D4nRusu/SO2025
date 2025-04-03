@@ -29,8 +29,8 @@ int main(int argc, char** argv)
 
     // --add
     if(strcmp(argv[1], "--add") == 0){
-        logger(huntId, argv[1], "");
         add(huntId);
+        logger(huntId, argv[1], "");
 
     // --list
     } else if(strcmp(argv[1], "--list") == 0){
