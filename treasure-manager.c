@@ -209,14 +209,14 @@ void rm_t(char* huntId, uint8_t tid)
         strcat(fPath, PATH_SEP);
         strcat(fPath, in_file->d_name);
 
-        FILE* in = fopen(fPath, "rb+");
-        if(in == NULL){
+        int in = open(fPath, O_RDWR, perms);
+        if(in == -1){
             printf("Error opening a treasure\n");
             closedir(hunt);
             return;
         }
         int offset = 0;
-        while(fread(&t, sizeof(t), 1, in) == 1){
+        while(read(in, &t, sizeof(t)) == sizeof(t)){
             if(t.tid != tid){
                 offset++;
                 continue;
@@ -227,13 +227,13 @@ void rm_t(char* huntId, uint8_t tid)
 
         if(found == 1){
             long pos = offset * sizeof(struct Treasure);
-            while(fread(&t, sizeof(t), 1, in) == 1){
-                fseek(in, pos, SEEK_SET);
-                fwrite(&t, sizeof(t), 1, in);
+            while(read(in, &t, sizeof(t)) == sizeof(t)){
+                lseek(in, pos, SEEK_SET);
+                write(in, &t, sizeof(t));
                 pos += sizeof(struct Treasure);
             }
             
-            ftruncate(fileno(in), ftell(in) - sizeof(struct Treasure)); //truncate file
+            ftruncate(in, lseek(in, 0, SEEK_END) - sizeof(struct Treasure)); //truncate file
             struct stat info;
             if(stat(fPath, &info)){
                 perror("stat");
@@ -241,17 +241,15 @@ void rm_t(char* huntId, uint8_t tid)
                 return;
             }
             if(info.st_size == 0){
-                fclose(in);
+                close(in);
                 remove(fPath);
                 break;
             } 
             printf("Treasure successfully removed\n");
-            fclose(in);
+            close(in);
             break;
-        } else {
-            printf("Specified treasure could not be found\n");
-        }
-        fclose(in);
+        } 
+        close(in);
     }
     closedir(hunt);
 }
