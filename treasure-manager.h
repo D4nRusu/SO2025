@@ -12,9 +12,12 @@
 #include <ftw.h>
 #include <linux/limits.h>
 #include <time.h>
+#include <fcntl.h>
 
 #define CWD_SIZE PATH_MAX
 #define PATH_SEP "/"
+
+#define CR_AP O_CREAT | O_WRONLY | O_APPEND
 
 struct Treasure{
     uint8_t tid;
@@ -33,7 +36,7 @@ void getSize(const char* path, int* totalSize);
 
 void logger(char* huntId, char* op, char* param);
 
-void add(char* huntId);
+uint8_t add(char* huntId);
 
 int rm_h(char* huntId);
 

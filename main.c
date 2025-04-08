@@ -29,8 +29,12 @@ int main(int argc, char** argv)
 
     // --add
     if(strcmp(argv[1], "--add") == 0){
-        add(huntId);
-        logger(huntId, argv[1], "");
+        uint8_t id = add(huntId);
+        if(id != 0){
+            char ids[256];
+            sprintf(ids, "%hhd", id);
+            logger(huntId, argv[1], ids);
+        }
 
     // --list
     } else if(strcmp(argv[1], "--list") == 0){

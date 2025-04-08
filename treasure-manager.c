@@ -1,5 +1,7 @@
 #include "treasure-manager.h"
 
+int perms = S_IRWXU | S_IRWXG | S_IRWXG;
+
 void getPath(char cwd[], char* huntId)
 {
     getcwd(cwd, CWD_SIZE);
@@ -46,23 +48,22 @@ void logger(char* huntId, char* op, char* param)
     strcat(cwd, PATH_SEP);
     strcat(cwd, "logged_hunt");
 
-    FILE* out = fopen(cwd, "a");
-    if(out == NULL){
+    int out = open(cwd, CR_AP, perms);
+    if(out == -1){
         printf("Error logging operation\n");
         return;
     }
 
     char buf[50];
-    strcpy(buf, op);
-    strcat(buf, " ");
-    strcat(buf, huntId);
-    strcat(buf, " ");
-    strcat(buf, param);
+    snprintf(buf, sizeof(buf), "%s %s %s\n", op, huntId, param);
 
-    fprintf(out, "%s\n", buf);
+    if(write(out, &buf, strlen(buf)) == -1){
+        printf("Error printing to log\n");
+    }
+    close(out);
 }
 
-void add(char* huntId)
+uint8_t add(char* huntId)
 {
     char cwd[CWD_SIZE];
     getPath(cwd, huntId);
@@ -77,6 +78,11 @@ void add(char* huntId)
     
     struct Treasure t;
     printf("\n\tTreasure id: "); scanf("%hhd", &t.tid);
+    if(t.tid == 0){
+        printf("Error! TreasureID can't be 0!!\n");
+        return 0;
+    }
+
     printf("\tUser name: "); scanf("%s", t.uname);
     printf("\tGPS coords (lat lon): "); scanf("%g %g", &t.GPS.lat, &t.GPS.lon);
     printf("\tClue: "); scanf("%s", t.clue);
@@ -86,30 +92,35 @@ void add(char* huntId)
     strcat(cwd, t.uname);
 
     if(firstTime == 1){
-        char source[CWD_SIZE], target[CWD_SIZE];
+        char source[CWD_SIZE - 100], target[CWD_SIZE];
         getcwd(source, CWD_SIZE);
 
-        strcpy(target, source);
+        /*strcpy(target, source);
         strcat(target, PATH_SEP);
         strcat(target, huntId);
-        strcat(target, "/logged_hunt");
+        strcat(target, "/logged_hunt");*/
+        if(strlen(source) == CWD_SIZE - 100){
+            printf("File path too long\n");
+            return 0;
+        }
+        snprintf(target, sizeof(target), "%s%s%s%s", source, PATH_SEP, huntId, "/logged_hunt");
 
-        strcat(source, PATH_SEP);
-        strcat(source, "logged_hunt_");
+        strcat(source, "/logged_hunt_");
         strcat(source, huntId);
         if (symlink(target, source) != 0) {
             perror("symlink");
         } 
     }
 
-    FILE* out = fopen(cwd, "a");
-    if(out == NULL){
+    int out = open(cwd, CR_AP, perms);
+    if(out == -1){
         printf("Error adding treasure to the hunt\n");
-        return;
+        return 0;
     }
 
-    fwrite(&t, sizeof(struct Treasure), 1, out);
-    fclose(out);
+    write(out, &t, sizeof(struct Treasure));
+    close(out);
+    return t.tid;
 }
 
 void list(char* huntId, uint8_t tid){
