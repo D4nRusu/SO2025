@@ -154,13 +154,13 @@ void list(char* huntId, uint8_t tid){
         strcat(fPath, PATH_SEP);
         strcat(fPath, in_file->d_name);
 
-        FILE* in = fopen(fPath, "rb");
-        if(in == NULL){
+        int in = open(fPath, O_RDONLY, perms);
+        if(in == -1){
             printf("Error opening a treasure\n");
             closedir(hunt);
             return;
         }
-        while(fread(&t, sizeof(t), 1, in) == 1){
+        while(read(in, &t, sizeof(t)) == sizeof(t)){
             if(tid == 0){
                 printf("\n\tTreasure id: %hhd\n", t.tid);
                 printf("\tUser name: %s\n", t.uname);
@@ -178,7 +178,7 @@ void list(char* huntId, uint8_t tid){
                 }
             }
         }
-        fclose(in);
+        close(in);
     }
 
     closedir(hunt);
