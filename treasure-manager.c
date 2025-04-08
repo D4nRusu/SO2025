@@ -77,6 +77,7 @@ uint8_t add(char* huntId)
     }
     
     struct Treasure t;
+    memset(&t, 0, sizeof(t));
     printf("\n\tTreasure id: "); scanf("%hhd", &t.tid);
     if(t.tid == 0){
         printf("Error! TreasureID can't be 0!!\n");
