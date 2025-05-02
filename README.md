@@ -6,11 +6,11 @@
 
     Phase 1 - complete (8/04/2025)
     Phase 2 - work in progress (02/05/2025)
-
+    Phase 3 - x
 
 ## How to build the project
 
-Project can be built by running `make` in the root directory of the source code.
+Project can be built by running `make` in the root directory of the source code. This will compile both treasure manager and hub.
 
 The configured compiler is `gcc`, and the executable will be named `tm`.
 
@@ -27,3 +27,13 @@ The configured compiler is `gcc`, and the executable will be named `tm`.
 `./tm --rm_h <huntId>` (removes an entire hunt)
 
 `./tm --rm_t <huntId> <treasureId>` (removes a treasure)
+
+## Treasure hub available commands:
+
+`./tm` to run the program and then
+    `start_monitor` to create the child process (monitor)
+    `stop_monitor` to end it
+    `list_hunts` to list all treasures
+    `list_treasures` to list treasures in a specified hunt
+    `view_treasure` to view a treasure from a specified hunt
+    `exit` to exit the main program, provided that there is no monitor (child process) active
