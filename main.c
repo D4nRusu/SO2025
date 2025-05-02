@@ -3,7 +3,7 @@
 
 #include "treasure-manager.h"
 
-int main(int argc, char** argv)
+int tm(int argc, char** argv) // handles ./tm
 {
     if(argc < 2){
         printf("./tm --<command> <options>\n");
@@ -26,7 +26,6 @@ int main(int argc, char** argv)
         strcpy(huntId, argv[2]);
     }
     
-
     // --add
     if(strcmp(argv[1], "--add") == 0){
         uint8_t id = add(huntId);
@@ -78,7 +77,19 @@ int main(int argc, char** argv)
         } else {
             printf("Bad command\n");
         }
-    } 
-    
+    }
+    return 0; 
+}
+
+int th(int argc, char** argv)
+{
     return 0;
+}
+
+int main(int argc, char** argv)
+{
+    if(argv[0][3] == 'm')
+        return tm(argc, argv);
+    else
+        return th(argc, argv);
 }

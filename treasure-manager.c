@@ -44,7 +44,11 @@ void getSize(const char* path, int* totalSize) {
 void logger(char* huntId, char* op, char* param)
 {
     char cwd[CWD_SIZE];
-    getPath(cwd, huntId);
+    char format[CWD_SIZE];
+    strcpy(format, "Hunt_");
+    strcat(format, huntId);
+
+    getPath(cwd, format);
     strcat(cwd, PATH_SEP);
     strcat(cwd, "logged_hunt");
 
@@ -66,7 +70,11 @@ void logger(char* huntId, char* op, char* param)
 uint8_t add(char* huntId)
 {
     char cwd[CWD_SIZE];
-    getPath(cwd, huntId);
+    char format[20];
+    strcpy(format, "Hunt_");
+    strcat(format, huntId);
+
+    getPath(cwd, format);
     int firstTime = 0;
 
     if(mkdir(cwd, 0755) < 0 || errno == EEXIST){
@@ -104,7 +112,7 @@ uint8_t add(char* huntId)
             printf("File path too long\n");
             return 0;
         }
-        snprintf(target, sizeof(target), "%s%s%s%s", source, PATH_SEP, huntId, "/logged_hunt");
+        snprintf(target, sizeof(target), "%s%s%s%s", source, PATH_SEP, format, "/logged_hunt");
 
         strcat(source, "/logged_hunt_");
         strcat(source, huntId);
@@ -127,7 +135,11 @@ uint8_t add(char* huntId)
 void list(char* huntId, uint8_t tid){
     char cwd[CWD_SIZE];
     struct dirent* in_file;
-    getPath(cwd, huntId);
+    char format[CWD_SIZE];
+    strcpy(format, "Hunt_");
+    strcat(format, huntId);
+
+    getPath(cwd, format);
     DIR* hunt = opendir(cwd);
 
     if(hunt == NULL){
@@ -188,7 +200,11 @@ void list(char* huntId, uint8_t tid){
 void rm_t(char* huntId, uint8_t tid)
 {
     char cwd[CWD_SIZE];
-    getPath(cwd, huntId);
+    char format[CWD_SIZE];
+    strcpy(format, "Hunt_");
+    strcat(format, huntId);
+
+    getPath(cwd, format);
     struct dirent* in_file;
     DIR* hunt = opendir(cwd);
 
@@ -261,8 +277,11 @@ int rm_h(char* huntId)
     char cwd[CWD_SIZE];
     char sym[CWD_SIZE];
     getcwd(sym, CWD_SIZE);
+    char format[CWD_SIZE];
+    strcpy(format, "Hunt_");
+    strcat(format, huntId);
 
-    getPath(cwd, huntId);
+    getPath(cwd, format);
     struct dirent* in_file;
     DIR* hunt = opendir(cwd);
 
