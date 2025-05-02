@@ -31,6 +31,7 @@ The configured compiler is `gcc`, and the executable will be named `tm`.
 ## Treasure hub available commands:
 
 `./tm` to run the program and then
+
     -`start_monitor` to create the child process (monitor)
     -`stop_monitor` to end it
     -`list_hunts` to list all treasures
