@@ -32,9 +32,9 @@ The configured compiler is `gcc`, and the executable will be named `tm`.
 
 `./tm` to run the program and then
 
-    -`start_monitor` to create the child process (monitor)
-    -`stop_monitor` to end it
-    -`list_hunts` to list all treasures
-    -`list_treasures` to list treasures in a specified hunt
-    -`view_treasure` to view a treasure from a specified hunt
-    -`exit` to exit the main program, provided that there is no monitor (child process) active
+    `start_monitor` to create the child process (monitor)
+    `stop_monitor` to end it
+    `list_hunts` to list all treasures
+    `list_treasures` to list treasures in a specified hunt
+    `view_treasure` to view a treasure from a specified hunt
+    `exit` to exit the main program, provided that there is no monitor (child process) active
