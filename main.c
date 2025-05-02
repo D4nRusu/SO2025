@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "treasure-manager.h"
+#include "treasure-hub.h"
 
 int tm(int argc, char** argv) // handles ./tm
 {
@@ -88,15 +89,83 @@ int tm(int argc, char** argv) // handles ./tm
     return 0; 
 }
 
-int th(int argc, char** argv)
+int th()
 {
+    printf("--Treasure hub--\n");
+
+    char command[15];
+    int okMoni = 0;
+    pid_t pid = -2;
+
+    char message[50];
+
+    while(1){
+        if(pid == 0){
+            break;
+        }
+        printf("\e[1;1H\e[2J"); // interesting solution I found for clearing the console
+        printf("Available Commands:\n");
+        printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tstop_monitor\n\texit\n\n");
+
+        printf("%s\n", message);
+        scanf("%s", command);
+
+        strcpy(message, "");
+
+        if(strcmp(command, "start_monitor") == 0){
+            if(okMoni == 1){
+                strcpy(message, "Can't start monitor - already active\n");
+                continue;
+            } else {
+                if((pid = startMonitor()) == -1){
+                    printf("Fatal error: unable to create the process\n");
+                    return -1;
+                }
+                strcpy(message, "Monitor active, PID: ");
+                char pid_s[7];
+                sprintf(pid_s, "%d", pid);
+                strcat(message, pid_s);
+
+                okMoni = 1;
+                continue;
+            }
+        }
+
+        if(strcmp(command, "stop_monitor") == 0){
+            kill(pid, SIGTERM);
+            printf("Stopping monitor...\n");
+            wait(NULL);
+            strcpy(message, "Monitor stopped\n");
+            okMoni = 0;
+            continue;
+        }
+
+        if(strcmp(command, "list_hunts") == 0){
+            kill(pid, SIGUSR1);
+            continue;
+        }
+
+        if(strcmp(command, "exit") == 0){
+            if(okMoni == 1){
+                strcpy(message, "Cannot exit - monitor still active\n");
+                continue;
+            } else {
+                printf("Exited successfully\n");
+                break;
+            }
+        }
+
+        strcpy(message, "Bad command\n");
+    }
+
+    if(pid == 0){
+        int status = childHandler();
+    }
+
     return 0;
 }
 
 int main(int argc, char** argv)
 {
-    if(argv[0][3] == 'm')
-        return tm(argc, argv);
-    else
-        return th(argc, argv);
+    return th();
 }

@@ -4,8 +4,8 @@
 
 ## Progress report
 
-    Phase 1 - complete
-    Phase 2 - work in progress
+    Phase 1 - complete (11/04/2025)
+    Phase 2 - work in progress (02/05/2025)
 
 
 ## How to build the project
