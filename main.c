@@ -93,21 +93,37 @@ int th()
 {
     printf("--Treasure hub--\n");
 
-    char command[15];
+    char command[20];
     int okMoni = 0;
     pid_t pid = -2;
+    int skip = 0;
 
-    char message[50];
+    char message[50] = "";
+
+    int com;
+    char cwd[CWD_SIZE];
+    getcwd(cwd, CWD_SIZE);
+    strcat(cwd, "/temp_com.txt");
+    com = open(cwd, O_CREAT | O_WRONLY, S_IRWXU | S_IRWXG | S_IRWXG);
+
+    if(com == -1){
+        printf("Error creating command file\n");
+        return 0;
+    }
 
     while(1){
         if(pid == 0){
             break;
         }
-        printf("\e[1;1H\e[2J"); // interesting solution I found for clearing the console
-        printf("Available Commands:\n");
-        printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tstop_monitor\n\texit\n\n");
-
-        printf("%s\n", message);
+        if(skip == 0){
+            printf("\e[1;1H\e[2J"); // interesting solution I found for clearing the console
+            printf("Available Commands:\n");
+            printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tstop_monitor\n\texit\n\n");
+            printf("%s\n", message);
+        } else {
+            skip = 0;
+        }
+        
         scanf("%s", command);
 
         strcpy(message, "");
@@ -130,8 +146,12 @@ int th()
                 continue;
             }
         }
-
+        
         if(strcmp(command, "stop_monitor") == 0){
+            if(okMoni == 0){
+                strcpy(message, "Error: no monitor active\n");
+                continue;
+            }
             kill(pid, SIGTERM);
             printf("Stopping monitor...\n");
             wait(NULL);
@@ -141,7 +161,15 @@ int th()
         }
 
         if(strcmp(command, "list_hunts") == 0){
+            if(okMoni == 0){
+                strcpy(message, "Error: no monitor active\n");
+                continue;
+            }
+            skip = 1;
+            write(com, "1", 1);
+            lseek(com, 0, SEEK_SET);
             kill(pid, SIGUSR1);
+            sleep(1);
             continue;
         }
 
@@ -160,6 +188,9 @@ int th()
 
     if(pid == 0){
         int status = childHandler();
+    } else {
+        close(com);
+        remove(cwd);
     }
 
     return 0;

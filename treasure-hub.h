@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+#include "treasure-manager.h"
 
 pid_t startMonitor();
 
