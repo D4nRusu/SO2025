@@ -313,3 +313,40 @@ int rm_h(char* huntId)
 
     return remove(cwd);
 }
+
+void listHunts()
+{
+    DIR *dir;
+    struct dirent *dent;
+
+    dir = opendir(".");
+    if(dir == NULL){
+        printf("err opening directory");
+        exit(-1);
+    }
+
+    printf("Hunts: ");
+    int count = 0;
+    while((dent = readdir(dir)) != NULL){
+        char comp[5] = "Hunt";
+        uint8_t found = 1;
+        
+        // checking if directory name starts with "Hunt"
+        for(int i = 0; i < 4; ++i){
+            if(dent->d_name[i] != comp[i]){
+                found = 0;
+                break;
+            }
+        }
+        
+        if(found == 1){
+            printf("%s ", dent->d_name);
+            count++;
+        }
+    }
+    if(count == 0){
+        printf("no hunts were found\n");
+        return;
+    }
+    printf("\n");
+}

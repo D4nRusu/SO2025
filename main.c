@@ -14,6 +14,13 @@ int tm(int argc, char** argv) // handles ./tm
         return 0;
     }
 
+    // --la
+    if(strcmp(argv[1], "--la") == 0){
+        listHunts();
+        return 0;
+    }
+
+    // commands beyond here require at least a huntId
     char huntId[20];
     if(argc < 3){
         printf("No huntID specified\n");
@@ -35,8 +42,8 @@ int tm(int argc, char** argv) // handles ./tm
             logger(huntId, argv[1], ids);
         }
 
-    // --list
-    } else if(strcmp(argv[1], "--list") == 0){
+    // --l
+    } else if(strcmp(argv[1], "--l") == 0){
         logger(huntId, argv[1], "");
         list(huntId, 0);
 

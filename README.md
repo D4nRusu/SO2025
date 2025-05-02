@@ -12,7 +12,9 @@ The configured compiler is `gcc`, and the executable will be named `tm`.
 
 `./tm --add <huntId>`
 
-`./tm --list <huntId>`
+`./tm --l <huntId>` (lists treasures in a hunt)
+
+`./tm --la` (lists all hunts)
 
 `./tm --view <huntId> <treasureId>`
 
