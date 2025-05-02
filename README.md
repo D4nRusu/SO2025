@@ -2,13 +2,19 @@
 
 ## Project done by Dan-Mihai Rusu
 
+## Progress report
+
+    Phase 1 - complete
+    Phase 2 - work in progress
+
+
 ## How to build the project
 
 Project can be built by running `make` in the root directory of the source code.
 
 The configured compiler is `gcc`, and the executable will be named `tm`.
 
-## Available commands:
+## Treasure manager available commands:
 
 `./tm --add <huntId>`
 
