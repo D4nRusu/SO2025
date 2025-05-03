@@ -128,6 +128,12 @@ int th()
 
         strcpy(message, "");
 
+        /*
+        In the temporary file each command is coded with a decimal for easier communication:
+        1 - list hunts
+        2 - list treasures in a hunt
+        3 - view treasure
+        */
         if(strcmp(command, "start_monitor") == 0){
             if(okMoni == 1){
                 strcpy(message, "Can't start monitor - already active\n");
@@ -173,6 +179,19 @@ int th()
             continue;
         }
 
+        if(strcmp(command, "list_treasures") == 0){
+            if(okMoni == 0){
+                strcpy(message, "Error: no monitor active\n");
+                continue;
+            }
+            skip = 1;
+            write(com, "2", 1);
+            lseek(com, 0, SEEK_SET);
+            kill(pid, SIGUSR1);
+            sleep(1);
+            continue;
+        }
+
         if(strcmp(command, "exit") == 0){
             if(okMoni == 1){
                 strcpy(message, "Cannot exit - monitor still active\n");
@@ -198,5 +217,7 @@ int th()
 
 int main(int argc, char** argv)
 {
-    return th();
+    if(argv[0][3] == 'h')
+        return th();
+    return tm(argc, argv);
 }

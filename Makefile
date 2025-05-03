@@ -1,8 +1,16 @@
-CC=gcc
-CFLAGS=-Wextra -Wall
+CC = gcc
+CFLAGS = -Wextra -Wall
 
-tm: main.c treasure-manager.c treasure-manager.h treasure-hub.c treasure-hub.h
-	$(CC) $(CFLAGS) -o tm main.c treasure-manager.c treasure-manager.h treasure-hub.c treasure-hub.h
+SRC = main.c treasure-manager.c treasure-hub.c
+HEAD = treasure-manager.h treasure-hub.h
+
+all: tm th
+
+tm: $(SRC) $(HEAD)
+	$(CC) $(CFLAGS) -o tm $(SRC)
+
+th: $(SRC) $(HEAD)
+	$(CC) $(CFLAGS) -o th $(SRC)
 
 clean:
-	rm tm th
+	rm -f tm th

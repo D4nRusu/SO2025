@@ -23,6 +23,11 @@ void signalHandler(int sig)
             read(com, &command, 1);
             if(command == '1'){
                 listHunts();
+            } 
+            else if(command == '2'){
+                char huntId[50];
+                printf("\n\nHuntID = "); scanf("%s", huntId);
+                list(huntId, 0);
             }
         }
     }
