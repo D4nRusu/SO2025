@@ -10,6 +10,6 @@
 
 pid_t startMonitor();
 
-int childHandler();
+void childHandler();
 
 void signalHandler(int sig);

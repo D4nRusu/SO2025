@@ -94,9 +94,9 @@ int th()
     printf("--Treasure hub--\n");
 
     char command[20];
-    int okMoni = 0;
+    int okMoni = 0; // 0 = monitor inactive
     pid_t pid = -2;
-    int skip = 0;
+    int skip = 0; // this determintes whether the console is cleared or not to allow the display of data
 
     char message[50] = "";
 
@@ -192,6 +192,19 @@ int th()
             continue;
         }
 
+        if(strcmp(command, "view_treasure") == 0){
+            if(okMoni == 0){
+                strcpy(message, "Error: no monitor active\n");
+                continue;
+            }
+            skip = 1;
+            write(com, "3", 1);
+            lseek(com, 0, SEEK_SET);
+            kill(pid, SIGUSR1);
+            sleep(1);
+            continue;
+        }
+
         if(strcmp(command, "exit") == 0){
             if(okMoni == 1){
                 strcpy(message, "Cannot exit - monitor still active\n");
@@ -206,7 +219,7 @@ int th()
     }
 
     if(pid == 0){
-        int status = childHandler();
+        childHandler();
     } else {
         close(com);
         remove(cwd);

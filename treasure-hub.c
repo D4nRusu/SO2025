@@ -29,11 +29,18 @@ void signalHandler(int sig)
                 printf("\n\nHuntID = "); scanf("%s", huntId);
                 list(huntId, 0);
             }
+            else if(command == '3'){
+                char huntId[50];
+                uint8_t tid = 0;
+                printf("\n\nHuntID = "); scanf("%s", huntId);
+                printf("TreasureID = "); scanf("%hhd", &tid);
+                list(huntId, tid);
+            }
         }
     }
 }
 
-int childHandler()
+void childHandler()
 {
     struct sigaction usr1;
     usr1.sa_handler = signalHandler;
@@ -59,5 +66,4 @@ int childHandler()
     while(1){
         pause();
     }
-    return 0;
 }
