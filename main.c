@@ -89,7 +89,7 @@ int tm(int argc, char** argv) // handles ./tm
     return 0; 
 }
 
-int th()
+int th() // handles ./th
 {
     printf("--Treasure hub--\n");
 
@@ -99,6 +99,8 @@ int th()
     int skip = 0; // this determintes whether the console is cleared or not to allow the display of data
 
     char message[50] = "";
+
+    int pipefd[2]; // [0] - read / [1] - write
 
     int com;
     char cwd[CWD_SIZE];
@@ -111,10 +113,13 @@ int th()
         return 0;
     }
 
+    close(pipefd[1]); // closing write end for both parent process
+
     while(1){
         if(pid == 0){
+            close(pipefd[0]); // close read end for child process
             break;
-        }
+        } 
         if(skip == 0){
             printf("\e[1;1H\e[2J"); // interesting solution I found for clearing the console
             printf("Available Commands:\n");
