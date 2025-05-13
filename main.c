@@ -100,8 +100,6 @@ int th() // handles ./th
 
     char message[50] = "";
 
-    int pipefd[2]; // [0] - read / [1] - write
-
     int com;
     char cwd[CWD_SIZE];
     getcwd(cwd, CWD_SIZE);
@@ -113,11 +111,8 @@ int th() // handles ./th
         return 0;
     }
 
-    close(pipefd[1]); // closing write end for both parent process
-
     while(1){
         if(pid == 0){
-            close(pipefd[0]); // close read end for child process
             break;
         } 
         if(skip == 0){

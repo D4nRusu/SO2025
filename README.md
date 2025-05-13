@@ -6,7 +6,7 @@
 
     Phase 1 - complete (08/04/2025)
     Phase 2 - complete (03/05/2025)
-    Phase 3 - x
+    Phase 3 - work in progress
 
 ## How to build and run the project
 
