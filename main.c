@@ -124,7 +124,7 @@ int th() // handles ./th
     }
 
     while(1){
-        if(pid == 0){
+        if(pid == 0){ // setting up pipe then leaving the parent loop, child has a separate one
             isPipe = 1;
             close(pipefd[0]); // closing read end for child
             if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
@@ -135,19 +135,20 @@ int th() // handles ./th
             close(pipefd[1]); // closing the original write end
             break;
         } else {
-            if(isPipe == 1){
+            if(isPipe == 1){ // only happens once - after the monitor has been started
                 isPipe = 0;
                 close(pipefd[1]); // closing write end for parent
             }
         }
-        if(skip == 0){
+        if(skip == 0){ // since I clear the console after almost every command, the printing is happening in the next cycle of the while loop
+                       // not when the command is given
             printf("\e[1;1H\e[2J"); // interesting solution I found for "clearing" the console
             printf("Available Commands:\n");
             printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tstop_monitor\n\texit\n\n");
             printf("%s\n", message);
         } else {
             skip = 0;
-            if(haveRead == 1){
+            if(haveRead == 1){ // only certain commands require reading from the pipe
                 while((count = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0){
                     buffer[count] = '\0';
                     printf("%s", buffer);
@@ -162,7 +163,7 @@ int th() // handles ./th
         strcpy(message, "");
 
         /*
-        In the temporary file each command is coded with a decimal for easier communication:
+        In the temporary file, each command is coded with a decimal for easier communication:
         1 - list hunts
         2 - list treasures in a hunt
         3 - view treasure
@@ -271,11 +272,11 @@ int th() // handles ./th
     }
 
     if(pid == 0){
-        childHandler();
+        childHandler(); // this is where the child enters it's loop and waits for signals from the parent
     } else {
         close(com);
-        close(pipefd[0]);
-        remove(cwd);
+        close(pipefd[0]); // closing read end for the parent since the program is supposed to exit
+        remove(cwd);      // removing the temporary file from where the child reads the command it has to execute
     }
 
     return 0;

@@ -36,7 +36,7 @@ void signalHandler(int sig)
                 read(com, &tid, sizeof(tid));
                 list(huntId, tid);
             }
-            printf("------\n"); // end marker so the parent stops reading
+            printf("------\n"); // end marker so the parent knows when to stop reading
             fflush(stdout);
         }
     }

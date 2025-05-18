@@ -10,8 +10,8 @@
 
 ## How to build and run the project
 
-Project can be built by running `make` in the root directory of the source code. This will compile both treasure manager and hub, and
-will output 2 executables, `tm` (Phase 1) and `th` (Phase 2).
+Project can be built by running `make` in the root directory of the source code. This will compile the treasure manager, hub, and score calculator
+It will output 3 executables, `tm` (Phase 1), `th` (Phase 2), and `tc` (Phase 3 calculator)
 
 The configured compiler is `gcc`.
 
@@ -44,3 +44,7 @@ The configured compiler is `gcc`.
 `view_treasure`         to view a treasure from a specified hunt
 
 `exit`                  to exit the main program, provided that there is no monitor (child process) active
+
+## Calculate score
+
+`./tc <huntId>` to output the added value of each user
