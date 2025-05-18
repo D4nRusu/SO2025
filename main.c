@@ -97,6 +97,7 @@ int th() // handles ./th
     int okMoni = 0; // 0 = monitor inactive
     pid_t pid = -2;
     int skip = 0; // this determintes whether the console is cleared or not to allow the display of data
+    int haveRead = 0;
 
     int pipefd[2]; // 0 - read |  1 - write
     int isPipe = 0;
@@ -108,6 +109,8 @@ int th() // handles ./th
     }
 
     char message[50] = "";
+    char buffer[1024]; // into which I will be reading from the pipe
+    ssize_t count;
 
     int com;
     char cwd[CWD_SIZE];
@@ -144,6 +147,14 @@ int th() // handles ./th
             printf("%s\n", message);
         } else {
             skip = 0;
+            if(haveRead == 1){
+                while((count = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0){
+                    buffer[count] = '\0';
+                    printf("%s", buffer);
+                    if(strstr(buffer, "------")) break;
+                }
+                haveRead = 0;
+            }
         }
         
         scanf("%s", command);
@@ -198,6 +209,8 @@ int th() // handles ./th
             lseek(com, 0, SEEK_SET);
             kill(pid, SIGUSR1);
             sleep(1);
+
+            haveRead = 1;
             continue;
         }
 
@@ -207,10 +220,17 @@ int th() // handles ./th
                 continue;
             }
             skip = 1;
+
+            char huntId[50];
             write(com, "2", 1);
+            printf("\n\nHuntID = "); scanf("%s", huntId);
+            write(com, huntId, sizeof(huntId));
+
             lseek(com, 0, SEEK_SET);
             kill(pid, SIGUSR1);
             sleep(1);
+
+            haveRead = 1;
             continue;
         }
 
@@ -220,10 +240,20 @@ int th() // handles ./th
                 continue;
             }
             skip = 1;
+
             write(com, "3", 1);
+            char huntId[50];
+            uint8_t tid = 0;
+            printf("\n\nHuntID = "); scanf("%s", huntId);
+            printf("TreasureID = "); scanf("%hhd", &tid);
+            write(com, huntId, sizeof(huntId));
+            write(com, &tid, sizeof(tid));
+
             lseek(com, 0, SEEK_SET);
             kill(pid, SIGUSR1);
             sleep(1);
+
+            haveRead = 1;
             continue;
         }
 
@@ -244,6 +274,7 @@ int th() // handles ./th
         childHandler();
     } else {
         close(com);
+        close(pipefd[0]);
         remove(cwd);
     }
 

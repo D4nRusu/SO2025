@@ -26,16 +26,18 @@ void signalHandler(int sig)
             } 
             else if(command == '2'){
                 char huntId[50];
-                printf("\n\nHuntID = "); scanf("%s", huntId);
+                read(com, &huntId, sizeof(huntId));
                 list(huntId, 0);
             }
             else if(command == '3'){
                 char huntId[50];
                 uint8_t tid = 0;
-                printf("\n\nHuntID = "); scanf("%s", huntId);
-                printf("TreasureID = "); scanf("%hhd", &tid);
+                read(com, &huntId, sizeof(huntId));
+                read(com, &tid, sizeof(tid));
                 list(huntId, tid);
             }
+            printf("------\n"); // end marker so the parent stops reading
+            fflush(stdout);
         }
     }
 }
@@ -62,7 +64,7 @@ void childHandler()
         exit(1);
     }
 
-    printf("Monitor awaiting command...\n");
+    // printf("Monitor awaiting command...\n");
     while(1){
         pause();
     }
