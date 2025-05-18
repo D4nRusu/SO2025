@@ -15,3 +15,5 @@ void childHandler();
 void signalHandler(int sig);
 
 void calc_score();
+
+int th();

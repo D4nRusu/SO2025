@@ -45,3 +45,5 @@ void list(char* huntId, uint8_t tid);
 void rm_t(char* huntId, uint8_t tid);
 
 void listHunts();
+
+int tm(int argc, char** argv);
