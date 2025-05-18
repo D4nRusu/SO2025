@@ -96,7 +96,7 @@ void calc_score()
         }
 
         if(found == 1){
-            char* afterBar = strchr(dent->d_name, '_');
+            char* afterBar = strchr(dent->d_name, '_'); // only interested in the hunt IDs, which are found after _
             afterBar++;
             strcpy(huntIds[count], afterBar);
             count++;
@@ -108,7 +108,51 @@ void calc_score()
         return;
     } 
 
+    int pipes[20][2];  
+    pid_t pids[20];     
+
     for(int i = 0; i < count; ++i){
-        printf("%s\n", huntIds[i]);
+        if (pipe(pipes[i]) == -1) {
+            perror("pipe");
+            exit(1);
+        }
+
+        pid_t pid = fork();
+        if (pid == -1) {
+            perror("fork");
+            exit(1);
+        }
+
+        if(pid == 0){
+            close(pipes[i][0]); // close read end for child
+        
+            if (dup2(pipes[i][1], STDOUT_FILENO) == -1) { // redirecting child's output to pipe
+                perror("dup2");
+                exit(1);
+            }
+            close(pipes[i][1]); // close the old write end
+
+            execlp("./tc", "./tc", huntIds[i], NULL);
+            perror("exec");
+            exit(1);
+        } else {
+            close(pipes[i][1]); // close parents write end
+            pids[i] = pid;
+        }
+    }
+
+    for (int i = 0; i < count; i++) {
+        char buffer[1024];
+        ssize_t bytes;
+
+        while ((bytes = read(pipes[i][0], buffer, sizeof(buffer) - 1)) > 0) {
+            buffer[bytes] = '\0';
+            printf("%s", buffer);
+            printf("PID associated with this hunt: %d\n", pids[i]);
+        }
+
+        close(pipes[i][0]);
+        waitpid(pids[i], NULL, 0);
+        printf("\n");
     }
 }
