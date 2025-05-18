@@ -1,7 +1,8 @@
 # SO2025
 
 ## Project done by Dan-Mihai Rusu
-
+Link to project description:
+https://docs.google.com/document/d/1rTsc4YG_-UEfPQDMbXr0S1nA7a58HibXUkv_zVt34hc/edit?tab=t.0
 ## Progress report
 
     Phase 1 - complete (08/04/2025)
