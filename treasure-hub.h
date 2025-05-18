@@ -13,3 +13,5 @@ pid_t startMonitor();
 void childHandler();
 
 void signalHandler(int sig);
+
+void calc_score();

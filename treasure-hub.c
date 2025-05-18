@@ -69,3 +69,46 @@ void childHandler()
         pause();
     }
 }
+
+void calc_score()
+{
+    DIR *dir;
+    struct dirent *dent;
+
+    dir = opendir(".");
+    if(dir == NULL){
+        printf("err opening directory");
+        exit(-1);
+    }
+
+    int count = 0;
+    char huntIds[100][20];
+    while((dent = readdir(dir)) != NULL){
+        char comp[5] = "Hunt";
+        uint8_t found = 1;
+        
+        // checking if directory name starts with "Hunt"
+        for(int i = 0; i < 4; ++i){
+            if(dent->d_name[i] != comp[i]){
+                found = 0;
+                break;
+            }
+        }
+
+        if(found == 1){
+            char* afterBar = strchr(dent->d_name, '_');
+            afterBar++;
+            strcpy(huntIds[count], afterBar);
+            count++;
+        }
+    }
+
+    if(count == 0){
+        printf("No hunts found\n");
+        return;
+    } 
+
+    for(int i = 0; i < count; ++i){
+        printf("%s\n", huntIds[i]);
+    }
+}

@@ -47,4 +47,4 @@ The configured compiler is `gcc`.
 
 ## Calculate score
 
-`./tc <huntId>` to output the added value of each user
+`./tc <huntId>` to output the added value of each user in that hunt

@@ -144,7 +144,7 @@ int th() // handles ./th
                        // not when the command is given
             printf("\e[1;1H\e[2J"); // interesting solution I found for "clearing" the console
             printf("Available Commands:\n");
-            printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tstop_monitor\n\texit\n\n");
+            printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tcalculate_score\n\tstop_monitor\n\texit\n\n");
             printf("%s\n", message);
         } else {
             skip = 0;
@@ -197,6 +197,12 @@ int th() // handles ./th
             wait(NULL);
             strcpy(message, "Monitor stopped\n");
             okMoni = 0;
+            continue;
+        }
+
+        if(strcmp(command, "calculate_score") == 0){
+            calc_score();
+            skip = 1;
             continue;
         }
 
