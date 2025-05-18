@@ -7,7 +7,7 @@ https://docs.google.com/document/d/1rTsc4YG_-UEfPQDMbXr0S1nA7a58HibXUkv_zVt34hc/
 
     Phase 1 - complete (08/04/2025)
     Phase 2 - complete (03/05/2025)
-    Phase 3 - work in progress
+    Phase 3 - complete (18/05/2025)
 
 ## How to build and run the project
 
@@ -46,6 +46,6 @@ The configured compiler is `gcc`.
 
 `exit`                  to exit the main program, provided that there is no monitor (child process) active
 
-## Calculate score
+## Calculate score `./tc`:
 
-`./tc <huntId>` to output the added value of each user in that hunt
+`./tc <huntId>` to output the added value of each user in the specified hunt
