@@ -98,6 +98,15 @@ int th() // handles ./th
     pid_t pid = -2;
     int skip = 0; // this determintes whether the console is cleared or not to allow the display of data
 
+    int pipefd[2]; // 0 - read |  1 - write
+    int isPipe = 0;
+
+    if (pipe(pipefd) == -1) {
+        printf("pipe error\n");
+        perror("pipe");
+        exit(-1);
+    }
+
     char message[50] = "";
 
     int com;
@@ -113,10 +122,23 @@ int th() // handles ./th
 
     while(1){
         if(pid == 0){
+            isPipe = 1;
+            close(pipefd[0]); // closing read end for child
+            if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
+                perror("dup2 failed");
+                printf("dup2 fatal error\n");
+                exit(-1);
+            }
+            close(pipefd[1]); // closing the original write end
             break;
-        } 
+        } else {
+            if(isPipe == 1){
+                isPipe = 0;
+                close(pipefd[1]); // closing write end for parent
+            }
+        }
         if(skip == 0){
-            printf("\e[1;1H\e[2J"); // interesting solution I found for clearing the console
+            printf("\e[1;1H\e[2J"); // interesting solution I found for "clearing" the console
             printf("Available Commands:\n");
             printf("\tstart_monitor\n\tlist_hunts\n\tlist_treasures\n\tview_treasure\n\tstop_monitor\n\texit\n\n");
             printf("%s\n", message);
